@@ -5,6 +5,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
+#include <stdint.h>
 #include "protocol.h"
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -158,10 +159,10 @@ int main(int argc, char *argv[]) {
         serialize += sizeof(char);
 
         // C. Value (Float)
-        uint32_t float_val_container;
-        memcpy(&float_val_container, &response.value, sizeof(float));
-        float_val_container = htonl(float_val_container);
-        memcpy(info + serialize, &float_val_container, sizeof(float));
+        uint32_t flo;
+        memcpy(&flo, &response.value, sizeof(float));
+        flo = htonl(flo);
+        memcpy(info + serialize, &flo, sizeof(float));
         serialize += sizeof(float);
 
         if (sendto(socks, info, serialize, 0, (struct sockaddr *)&cad, cad_len) < 0) {
