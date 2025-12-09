@@ -44,7 +44,14 @@ float random_float(float min, float max) {
 // Funzione di validazione corretta
 void valida(weather_request_t *req, weather_response_t *resp) {
 
-    // Controllo Città
+	// 1. Controllo Tipo
+    if(req->type != TYPE_TEMPERATURE && req->type != TYPE_HUMIDITY &&
+       req->type != TYPE_WIND && req->type != TYPE_PRESSURE) {
+        resp->status = STATUS_INVALID_REQUEST;
+        return;
+    }
+
+    // 2. Controllo Città
     int found = 0;
     for (int i = 0; i < 10; i++) {
         if(strcasecmp(req->city, SUPPORTED_CITIES[i]) == 0) {
@@ -64,15 +71,6 @@ float get_temperature(void) { return random_float(-10.0, 40.0); }
 float get_humidity(void)    { return random_float(20.0, 100.0); }
 float get_wind(void)        { return random_float(0.0, 100.0); }
 float get_pressure(void)    { return random_float(950.0, 1050.0); }
-
-
-int tipo_ok(char type)
-{
-return (type== TYPE_TEMPERATURE || type== TYPE_HUMIDITY ||
-		type== TYPE_WIND || type== TYPE_PRESSURE);
-}
-
-
 
 int main(int argc, char *argv[]) {
 #if defined(_WIN32) || defined(_WIN64)
@@ -142,13 +140,8 @@ int main(int argc, char *argv[]) {
                 case TYPE_PRESSURE:    response.value = get_pressure(); break;
             }
         } else {
-        	if(!tipo_ok(request.type))
-        	{
-        		response.type = request.type;
-        		response.value = 0.0;
-        		response.status=STATUS_INVALID_REQUEST;
-        	}
-
+            response.type = request.type;
+            response.value = 0.0;
         }
 
 
