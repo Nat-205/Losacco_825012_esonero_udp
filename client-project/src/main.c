@@ -139,29 +139,39 @@ int main(int argc, char *argv[]) {
 
     request.city[0] = toupper(request.city[0]);
 
-    switch (response.status) {
-        case STATUS_SUCCESS:
-            switch (response.type) {
-                case TYPE_TEMPERATURE:
-                    printf("%s: Temperatura = %.2f C\n", request.city, response.value);
-                    break;
-                case TYPE_HUMIDITY:
-                    printf("%s: Umidita' = %.1f %%\n", request.city, response.value);
-                    break;
-                case TYPE_WIND:
-                    printf("%s: Vento = %.1f km/h\n", request.city, response.value);
-                    break;
-                case TYPE_PRESSURE:
-                    printf("%s: Pressione = %.1f hPa\n", request.city, response.value);
-                    break;
-            }
-            break;
-        case STATUS_CITY_UNAVAILABLE:
-            printf("Citta' non disponibile\n");
-            break;
-        case STATUS_INVALID_REQUEST:
-            printf("Richiesta non valida\n");
-            break;
+     if(response.status == STATUS_SUCCESS)
+    {
+    switch(response.type)
+    {
+    case TYPE_TEMPERATURE:
+    printf("%s: Temperatura = %.2f C\n", request.city, response.value);
+    break;
+
+   case TYPE_HUMIDITY:
+   printf("%s: Umidita' = %.1f %%\n", request.city, response.value);
+   break;
+
+   case TYPE_WIND:
+   printf("%s: Vento = %.1f km/h\n", request.city, response.value);
+   break;
+
+   case TYPE_PRESSURE:
+    printf("%s: Pressione = %.1f hPa\n", request.city, response.value);
+     break;
+    } //fine switch
+    } //fine condizione
+
+    else
+    {
+    if(response.status==STATUS_INVALID_REQUEST)
+    {
+    printf("Richiesta non valida\n");
+    }
+    else
+    {
+    printf("Città non disponibile\n");
+    }
+
     }
 
     closesocket(connysocks);
