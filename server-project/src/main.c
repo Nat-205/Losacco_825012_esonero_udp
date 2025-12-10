@@ -49,16 +49,13 @@ void valida(weather_request_t *req, weather_response_t *resp) {
         resp->status = STATUS_INVALID_REQUEST;
         return;
     }
-    int dspace=0;
+
     // 2. Controllo del nome città
+    int dspace=0;
     for (int i = 0; req->city[i] != '\0'; i++) {
-        if (!isalpha((unsigned char)req->city[i])) {
-            resp->status = STATUS_INVALID_REQUEST;
-            return;
-        }
         if(isdigit((unsigned char)req->city[i]))
         {
-        resp->status =STATUS_INVALID_REQUEST;
+        resp->status =STATUS_CITY_UNAVAILABLE;
         return;
         }
         if(isspace((unsigned char)req->city[i]))
@@ -66,11 +63,18 @@ void valida(weather_request_t *req, weather_response_t *resp) {
         dspace++;
         if(dspace>=1)
         {
-        resp->status =STATUS_INVALID_REQUEST;
+        resp->status =STATUS_CITY_UNAVAILABLE;
         return;
         }
         }
     }
+
+    for (int i = 0; req->city[i] != '\0'; i++) {
+            if (!isalpha((unsigned char)req->city[i])) {
+                resp->status = STATUS_INVALID_REQUEST;
+                return;
+            }
+    		}
 
     int found = 0;
     for (int i = 0; i < 10; i++) {
