@@ -41,17 +41,23 @@ float random_float(float min, float max) {
     return min + scale * (max - min);
 }
 
-// Funzione di validazione corretta
 void valida(weather_request_t *req, weather_response_t *resp) {
 
-	// 1. Controllo Tipo
+    // 1. Controllo Tipo
     if(req->type != TYPE_TEMPERATURE && req->type != TYPE_HUMIDITY &&
        req->type != TYPE_WIND && req->type != TYPE_PRESSURE) {
         resp->status = STATUS_INVALID_REQUEST;
         return;
     }
 
-    // 2. Controllo Città
+    // 2. Controllo del nome città
+    for (int i = 0; req->city[i] != '\0'; i++) {
+        if (!isalpha((unsigned char)req->city[i])) {
+            resp->status = STATUS_INVALID_REQUEST;
+            return;
+        }
+    }
+
     int found = 0;
     for (int i = 0; i < 10; i++) {
         if(strcasecmp(req->city, SUPPORTED_CITIES[i]) == 0) {
@@ -67,11 +73,13 @@ void valida(weather_request_t *req, weather_response_t *resp) {
     }
 }
 
+
 float get_temperature(void) { return random_float(-10.0, 40.0); }
 float get_humidity(void)    { return random_float(20.0, 100.0); }
 float get_wind(void)        { return random_float(0.0, 100.0); }
 float get_pressure(void)    { return random_float(950.0, 1050.0); }
 
+//inizio main server
 int main(int argc, char *argv[]) {
 #if defined(_WIN32) || defined(_WIN64)
     WSADATA wsa_data;
@@ -175,3 +183,4 @@ int main(int argc, char *argv[]) {
     clearwinsock();
     return 0;
 }
+
