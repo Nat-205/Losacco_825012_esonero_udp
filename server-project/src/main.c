@@ -49,12 +49,26 @@ void valida(weather_request_t *req, weather_response_t *resp) {
         resp->status = STATUS_INVALID_REQUEST;
         return;
     }
-
+    int dspace=0;
     // 2. Controllo del nome città
     for (int i = 0; req->city[i] != '\0'; i++) {
         if (!isalpha((unsigned char)req->city[i])) {
             resp->status = STATUS_INVALID_REQUEST;
             return;
+        }
+        if(isdigit((unsigned char)req->city[i]))
+        {
+        resp->status =STATUS_INVALID_REQUEST;
+        return;
+        }
+        if(isspace((unsigned char)req->city[i]))
+        {
+        dspace++;
+        if(dspace>=1)
+        {
+        resp->status =STATUS_INVALID_REQUEST;
+        return;
+        }
         }
     }
 
